@@ -5,9 +5,10 @@ import classes from './Quiz.module.css';
 
 class Quiz extends Component {
   state = {
+    results: {}, // {[id]: 'success'|'error'}
     isFinished: true,
     activeQuestion: 0,
-    answerState: null, // { id: 'success'|'error' }
+    answerState: null, // { [id]: 'success'|'error' }
     quiz: [
       {
         id: 1,
@@ -47,8 +48,17 @@ class Quiz extends Component {
     }
     const question = this.state.quiz[this.state.activeQuestion];
 
+    const results = this.state.results;
+
     if (question.rightAnswerId === answerId) {
-      this.setState(() => ({ answerState: { [answerId]: 'success' } }));
+      if (!results[answerId]) {
+        results[answerId] = 'success';
+      }
+
+      this.setState(() => ({
+        answerState: { [answerId]: 'success' },
+        results,
+      }));
 
       console.log('Correct answer!');
       const timeout = window.setTimeout(() => {
@@ -64,7 +74,8 @@ class Quiz extends Component {
         window.clearTimeout(timeout);
       }, 1000);
     } else {
-      this.setState(() => ({ answerState: { [answerId]: 'error' } }));
+      results[answerId] = 'error';
+      this.setState(() => ({ answerState: { [answerId]: 'error' }, results }));
       console.log('Wrong answer!');
     }
   };
@@ -76,7 +87,7 @@ class Quiz extends Component {
           <h1>Ответьте на все вопросы</h1>
 
           {this.state.isFinished ? (
-            <FinishedQuiz />
+            <FinishedQuiz results={this.state.results} quiz={this.state.quiz} />
           ) : (
             <ActiveQuiz
               question={this.state.quiz[this.state.activeQuestion].question}
