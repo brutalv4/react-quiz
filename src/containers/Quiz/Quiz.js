@@ -6,7 +6,7 @@ import classes from './Quiz.module.css';
 class Quiz extends Component {
   state = {
     results: {}, // {[id]: 'success'|'error'}
-    isFinished: true,
+    isFinished: false,
     activeQuestion: 0,
     answerState: null, // { [id]: 'success'|'error' }
     quiz: [
@@ -51,8 +51,8 @@ class Quiz extends Component {
     const results = this.state.results;
 
     if (question.rightAnswerId === answerId) {
-      if (!results[answerId]) {
-        results[answerId] = 'success';
+      if (!results[question.id]) {
+        results[question.id] = 'success';
       }
 
       this.setState(() => ({
@@ -60,7 +60,6 @@ class Quiz extends Component {
         results,
       }));
 
-      console.log('Correct answer!');
       const timeout = window.setTimeout(() => {
         if (this.isQuizFinished()) {
           this.setState(() => ({ isFinished: true }));
@@ -72,12 +71,23 @@ class Quiz extends Component {
         }
 
         window.clearTimeout(timeout);
-      }, 1000);
+      }, 500);
     } else {
-      results[answerId] = 'error';
+      results[question.id] = 'error';
       this.setState(() => ({ answerState: { [answerId]: 'error' }, results }));
-      console.log('Wrong answer!');
     }
+  };
+
+  retryHandler = () => {
+    const timeOut = window.setTimeout(() => {
+      this.setState(() => ({
+        activeQuestion: 0,
+        answerState: null,
+        isFinished: false,
+        results: {},
+      }));
+      window.clearTimeout(timeOut);
+    }, 500);
   };
 
   render() {
@@ -87,7 +97,11 @@ class Quiz extends Component {
           <h1>Ответьте на все вопросы</h1>
 
           {this.state.isFinished ? (
-            <FinishedQuiz results={this.state.results} quiz={this.state.quiz} />
+            <FinishedQuiz
+              results={this.state.results}
+              quiz={this.state.quiz}
+              onRetry={this.retryHandler}
+            />
           ) : (
             <ActiveQuiz
               question={this.state.quiz[this.state.activeQuestion].question}

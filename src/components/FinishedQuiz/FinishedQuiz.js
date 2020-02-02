@@ -1,32 +1,41 @@
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { default as classses } from './FinishedQuiz.module.css';
+import Button from '../UI/Button/Button';
+import { default as classes } from './FinishedQuiz.module.css';
 
 const FinishedQuiz = props => {
+  const successCount = Object.keys(props.results).reduce((total, key) => {
+    if (props.results[key] === 'success') {
+      total++;
+    }
+    return total;
+  }, 0);
   return (
-    <div className={classses.FinishedQuiz}>
+    <div className={classes.FinishedQuiz}>
       <ul>
-        {props.quiz.map((question, index) => {
-          let icon;
-
+        {props.quiz.map((quizItem, index) => {
+          const error = props.results[quizItem.id] === 'error';
           return (
             <li key={index}>
               <strong>{index + 1}. </strong>
-              {question}
+              {quizItem.question}
+              <FontAwesomeIcon
+                icon={error ? faTimes : faCheck}
+                className={classes[error ? 'error' : 'success']}
+              />
             </li>
           );
         })}
-        {/* <li>
-          <strong>1. </strong>How are you
-          <FontAwesomeIcon icon={faTimes} className={classes.error} />
-        </li>
-        <li>
-          <strong>2. </strong>How are you
-          <FontAwesomeIcon icon={faCheck} className={classes.success} />
-        </li> */}
       </ul>
-      <p>Правильно 4 из 10</p>
-      <div className="">
-        <button>Повторить</button>
+      <p>
+        Правильно {successCount} из {props.quiz.length}
+      </p>
+      <div>
+        <Button onClick={props.onRetry} type="primary">
+          Повторить
+        </Button>
+        <Button type="success">Перейти в список тестов</Button>
       </div>
     </div>
   );
