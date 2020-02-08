@@ -2,7 +2,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import Button from '../UI/Button/Button';
-import { default as classes } from './FinishedQuiz.module.css';
+import classes from './FinishedQuiz.module.css';
 
 const FinishedQuiz = props => {
   const successCount = Object.keys(props.results).reduce((total, key) => {
