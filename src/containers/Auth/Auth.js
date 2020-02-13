@@ -1,3 +1,4 @@
+import is from 'is_js';
 import React, { Component } from 'react';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
@@ -58,8 +59,7 @@ class Auth extends Component {
     }
 
     if (validation.email) {
-      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      isValid = re.test(String(value).toLowerCase()) && isValid;
+      isValid = is.email(value) && isValid;
     }
 
     if (validation.minLength) {
@@ -70,8 +70,6 @@ class Auth extends Component {
   }
 
   onChangeHandler = (event, ctrlName) => {
-    console.log(ctrlName, event.target.value);
-
     const formControls = { ...this.state.formControls };
     const ctrl = { ...formControls[ctrlName] };
 
