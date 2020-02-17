@@ -3,13 +3,25 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import classes from './QuizList.module.css';
 
-const quizes = [1, 2, 3];
-
 class QuizList extends Component {
-  componentDidMount() {
-    axios
-      .get('https://react-quiz-13580.firebaseio.com/quiz.json')
-      .then(response => console.log(response));
+  state = {
+    quizes: [],
+  };
+
+  async componentDidMount() {
+    try {
+      const response = await axios.get(
+        'https://react-quiz-13580.firebaseio.com/quizes.json'
+      );
+      const quizes = [];
+      Object.keys(response.data).forEach((id, index) => {
+        quizes.push({ id, name: `Тест №${index + 1}` });
+      });
+
+      this.setState({ quizes });
+    } catch (reason) {
+      console.error(reason);
+    }
   }
 
   render() {
@@ -18,9 +30,9 @@ class QuizList extends Component {
         <div>
           <h1>Список тестов</h1>
           <ul>
-            {quizes.map((quiz, index) => (
-              <li key={index}>
-                <NavLink to={`/quiz/${quiz}`}>Тест {quiz}</NavLink>
+            {this.state.quizes.map(quiz => (
+              <li key={quiz.id}>
+                <NavLink to={`/quiz/${quiz.id}`}>{quiz.name}</NavLink>
               </li>
             ))}
           </ul>
