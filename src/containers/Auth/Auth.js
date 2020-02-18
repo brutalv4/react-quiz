@@ -1,3 +1,4 @@
+import axios from 'axios';
 import is from 'is_js';
 import React, { Component } from 'react';
 import Button from '../../components/UI/Button/Button';
@@ -35,17 +36,38 @@ class Auth extends Component {
     },
   };
 
-  loginHandler = () => {
-    console.log('logged in');
+  loginHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true,
+    };
+    try {
+      const response = await axios.post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAeP9voyeljrUVKLoLy8OkwJCYQ-wrX-z0',
+        authData
+      );
+      console.log(response.data);
+    } catch (reason) {
+      console.error(reason);
+    }
   };
 
-  registerHandler = () => {
-    console.log('registered');
-  };
-
-  submitHandler = event => {
-    event.preventDefault();
-    console.log('submit');
+  registerHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true,
+    };
+    try {
+      const response = await axios.post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAeP9voyeljrUVKLoLy8OkwJCYQ-wrX-z0',
+        authData
+      );
+      console.log(response.data);
+    } catch (reason) {
+      console.error(reason);
+    }
   };
 
   validateCtrl(value, validation) {
@@ -94,7 +116,10 @@ class Auth extends Component {
         <div>
           <h1>Авторизация</h1>
 
-          <form onSubmit={this.submitHandler} className={classes.AuthForm}>
+          <form
+            onSubmit={event => event.preventDefault()}
+            className={classes.AuthForm}
+          >
             {Object.keys(this.state.formControls).map((ctrlName, index) => {
               const ctrl = this.state.formControls[ctrlName];
               return (
