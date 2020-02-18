@@ -5,6 +5,8 @@ import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
 import classes from './Auth.module.css';
 
+const APP_KEY = process.env.REACT_APP_FIREBASE_APP_KEY;
+
 class Auth extends Component {
   state = {
     isFormValid: false,
@@ -44,7 +46,7 @@ class Auth extends Component {
     };
     try {
       const response = await axios.post(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAeP9voyeljrUVKLoLy8OkwJCYQ-wrX-z0',
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${APP_KEY}`,
         authData
       );
       console.log(response.data);
@@ -61,7 +63,7 @@ class Auth extends Component {
     };
     try {
       const response = await axios.post(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAeP9voyeljrUVKLoLy8OkwJCYQ-wrX-z0',
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${APP_KEY}`,
         authData
       );
       console.log(response.data);
